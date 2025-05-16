@@ -1,25 +1,27 @@
 import { HStack, Input, Button } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useTodos } from '../hooks/useTodos';
 
 type Props = {
-  onAdd: (text: string) => void;
+  date: string;
 };
 
-export default function TaskInput({ onAdd }: Props) {
+const TaskInput = ({ date }: Props) => {
+  const { addTask } = useTodos();
   const [input, setInput] = useState('');
-
+  
   const handleAdd = () => {
     if (input.trim() === '') return;
-    onAdd(input);
+    addTask({ text: input, date }); // ✅ ここで date を渡す
     setInput('');
   };
 
   return (
-    <HStack>
+    <HStack mt="20px">
       <Input
-        placeholder="タスクを入力"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        placeholder="タスクを入力"
       />
       <Button onClick={handleAdd} colorScheme="blue">
         追加
@@ -27,3 +29,4 @@ export default function TaskInput({ onAdd }: Props) {
     </HStack>
   );
 }
+export default TaskInput;

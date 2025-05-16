@@ -1,10 +1,12 @@
 // 日付を選んで「カード（＝その日付のタスク一覧）」を追加する
 // 追加された各カードには、個別にタスク入力・完了チェック・削除・フィルター機能がある（←これは TaskCard.tsx に実装済）
 
-import { useState,useEffect } from 'react';
-import { VStack, SimpleGrid, Input, Button } from '@chakra-ui/react';
+import { useState, useEffect, useCallback } from 'react';
+import { VStack, SimpleGrid, Input, Button, Select } from '@chakra-ui/react';
 import Header from './components/Header'
 import TaskCard from './components/TaskCard';
+
+type Filter = 'all' | 'active' | 'completed';
 
 export default function App() {
   const [cards, setCards] = useState<string[]>([]);
@@ -13,6 +15,8 @@ export default function App() {
   const [newDate, setNewDate] = useState('');
   // ユーザーが <Input type="date" /> で選んだ日付（1枚追加する用）
   // 初期値は空文字列 '' です。
+
+  const [filter, setFilter] = useState<Filter>('all');
 
   // localStorage から cards を読み込み
   useEffect(() => {
@@ -39,6 +43,13 @@ export default function App() {
     setNewDate('');
   };
 
+  // 関数をメモ化
+  const handleRemoveCard = useCallback(
+    (target: string) => {
+      setCards((prev) => prev.filter((d) => d !== target));
+    },
+    [] // または [cards]、依存に応じて
+  );
 
   return (
     <VStack spacing={6} p={6}>
@@ -56,15 +67,26 @@ export default function App() {
         </Button>
       </VStack>
       {/* ✅ カードを横3列、スマホは1列で表示 */}
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+      <Select
+        value={filter}
+        onChange={(e) => setFilter(e.target.value as 'all' | 'active' | 'completed')}
+        w="200px"
+      >
+        <option value="all">すべて</option>
+        <option value="active">未完了</option>
+        <option value="completed">完了済み</option>
+      </Select>
+      <SimpleGrid columns={{ base: 1, md: 2, lg:3 }} spacing={6} maxWidth="1024px">
         {cards.map((date) => (
           <TaskCard
             key={date}
             date={date}
+            filter={filter}
             // ✅ カード削除関数を内部にまとめた形式
-            onRemoveCard={(target) =>
-              setCards(cards.filter((d) => d !== target))
-            }
+            onRemoveCard={handleRemoveCard}
+            // onRemoveCard={(target) =>
+            //   setCards(cards.filter((d) => d !== target))
+            // }
           />
         ))}
       </SimpleGrid>
