@@ -4,15 +4,21 @@ import { useTodos } from '../hooks/useTodos';
 
 type Props = {
   date: string;
+  onAdd?: (text: string) => void; // optional でテスト対応
 };
 
-const TaskInput = ({ date }: Props) => {
+const TaskInput = ({ date, onAdd }: Props) => {
   const { addTask } = useTodos();
   const [input, setInput] = useState('');
   
   const handleAdd = () => {
     if (input.trim() === '') return;
-    addTask({ text: input, date }); // ✅ ここで date を渡す
+    if (onAdd) {
+      onAdd(input); // テスト時のみ
+    } else {
+      addTask({ text: input, date }); // ✅ オブジェクト形式で渡す
+    }
+
     setInput('');
   };
 
