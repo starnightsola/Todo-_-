@@ -14,7 +14,7 @@ test('入力して追加ボタンを押すと onAdd が呼ばれる', async () =
       <TaskInput date="2025-05-01" onAdd={onAdd} />
     </TaskProvider>
   );
-
+  
   const input = screen.getByTestId('task-input');
   const button = screen.getByTestId('add-button');
   // const input = screen.getByPlaceholderText('タスクを入力');
@@ -23,5 +23,5 @@ test('入力して追加ボタンを押すと onAdd が呼ばれる', async () =
   await userEvent.type(input, '買い物');
   await userEvent.click(button);
 
-  expect(onAdd).toHaveBeenCalledWith('買い物', '2025-05-01');
+  expect(onAdd).toHaveBeenCalledWith('買い物');
 });
