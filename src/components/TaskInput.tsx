@@ -28,8 +28,9 @@ const TaskInput = ({ date, onAdd }: Props) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="タスクを入力"
+        data-testid="task-input"
       />
-      <Button onClick={handleAdd} colorScheme="blue">
+      <Button onClick={handleAdd} colorScheme="blue" data-testid="add-button">
         追加
       </Button>
     </HStack>
