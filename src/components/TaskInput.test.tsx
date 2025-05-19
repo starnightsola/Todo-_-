@@ -2,8 +2,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TaskInput from './TaskInput';
-import { vi } from 'vitest';
-import { expect, test } from 'vitest';
+import { vi, expect, test } from 'vitest';
 
 
 test('入力して追加ボタンを押すと onAdd が呼ばれる', async () => {

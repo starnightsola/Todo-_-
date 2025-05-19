@@ -14,12 +14,12 @@ const TaskInput = ({ date, onAdd }: Props) => {
   const handleAdd = () => {
     if (input.trim() === '') return;
     if (onAdd) {
-      onAdd(input); // テスト時のみ
+      onAdd(input); // テスト用：モック関数が呼ばれる
     } else {
-      addTask({ text: input, date }); // ✅ オブジェクト形式で渡す
+      addTask({ text: input, date }); // 本番用：Contextからの関数が呼ばれる
     }
 
-    setInput('');
+    setInput(''); // ← 入力欄をリセット！
   };
 
   return (
