@@ -6,9 +6,9 @@ export type Task = {
   text: string;     // タスクの内容
   done: boolean;    // 完了状態（true: 完了 / false: 未完了）
   isEditing: boolean; // ← 追加
-  date: string;;
+  date: string;
 };
-
+const test   =   "hello"
 export type Action =
   | { type: 'add'; payload: { text: string; date: string } }
   | { type: 'toggle'; payload: number }
