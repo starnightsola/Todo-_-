@@ -1,5 +1,5 @@
-import { HStack, Input, Button } from '@chakra-ui/react';
 import { useState } from 'react';
+import { Box, TextField, Button, Stack } from '@mui/material';
 import { useTodos } from '../hooks/useTodos';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 const TaskInput = ({ date, onAdd }: Props) => {
   const { addTask } = useTodos();
   const [input, setInput] = useState('');
-  
+
   const handleAdd = () => {
     if (input.trim() === '') return;
     if (onAdd) {
@@ -23,17 +23,37 @@ const TaskInput = ({ date, onAdd }: Props) => {
   };
 
   return (
-    <HStack mt="20px">
-      <Input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="タスクを入力"
-        data-testid="task-input"
-      />
-      <Button onClick={handleAdd} colorScheme="blue" data-testid="add-button">
-        追加
-      </Button>
-    </HStack>
+    <Box mt={2}>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          justifyContent: 'space-between',
+        }}
+      >
+        <TextField
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="タスクを入力"
+          size="small"
+          inputProps={{ 'data-testid': 'task-input' }}
+        />
+        <Button
+          variant="contained"
+          onClick={handleAdd}
+          data-testid="add-button"
+          sx={{
+            backgroundColor: 'primary.light',
+            color: 'white', // 必要なら文字色も調整
+            '&:hover': {
+              backgroundColor: 'primary.main', // ホバー時の色も調整可能
+            },
+          }}
+        >
+          追加
+        </Button>
+      </Stack>
+    </Box>
   );
-}
+};
 export default TaskInput;
