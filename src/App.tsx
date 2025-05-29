@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { VStack, SimpleGrid, Input, Button, Select } from '@chakra-ui/react';
-import Header from './components/Header'
+import Header from './components/Header';
 import TaskCard from './components/TaskCard';
 
 type Filter = 'all' | 'active' | 'completed';
@@ -54,14 +54,8 @@ export default function App() {
   return (
     <VStack spacing={6} p={6}>
       <Header />
-
       <VStack>
-        <Input
-          type="date"
-          value={newDate}
-          onChange={(e) => setNewDate(e.target.value)}
-          w="200px"
-        />
+        <Input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} w="200px" />
         <Button onClick={addCard} colorScheme="green">
           カード追加
         </Button>
@@ -76,7 +70,7 @@ export default function App() {
         <option value="active">未完了</option>
         <option value="completed">完了済み</option>
       </Select>
-      <SimpleGrid columns={{ base: 1, md: 2, lg:3 }} spacing={6} maxWidth="1024px">
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} maxWidth="1024px">
         {cards.map((date) => (
           <TaskCard
             key={date}
@@ -93,4 +87,3 @@ export default function App() {
     </VStack>
   );
 }
-
