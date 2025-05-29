@@ -3,8 +3,8 @@
 // タスク1件のデータ型
 export type Task = {
   id: number;
-  text: string;     // タスクの内容
-  done: boolean;    // 完了状態（true: 完了 / false: 未完了）
+  text: string; // タスクの内容
+  done: boolean; // 完了状態（true: 完了 / false: 未完了）
   isEditing: boolean; // ← 追加
   date: string;
 };
@@ -31,4 +31,15 @@ export type TaskPatchInput = Partial<Omit<Task, 'id'>> & { id: number };
 export type NewTaskInput = {
   text: string;
   date: string;
+};
+
+// Header コンポーネント用の props 型
+export type HeaderProps = {
+  onMenuClick: () => void;
+  isDrawerOpen: boolean;
+};
+
+export type NavProps = {
+  open: boolean;
+  onClose: () => void;
 };

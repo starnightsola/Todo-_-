@@ -1,5 +1,7 @@
-import { HStack, Checkbox, CloseButton, Stack, Button, Input } from '@chakra-ui/react';
 import { useState } from 'react';
+import { Box, Checkbox, TextField, Button, IconButton, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useTodos } from '../hooks/useTodos';
 
 export type Filter = 'all' | 'active' | 'completed';
@@ -16,22 +18,18 @@ const TaskList = ({ filter, date }: Props) => {
 
   const filteredTasks = tasks
     .filter((task) => task.date === date)
-    .filter((task) =>
-      filter === 'all' ? true : filter === 'active' ? !task.done : task.done
-    );
-
+    .filter((task) => (filter === 'all' ? true : filter === 'active' ? !task.done : task.done));
 
   return (
-    <Stack spacing={3}>
+    <Box display="flex" flexDirection="column" gap={2}>
       {filteredTasks.map((task) => (
-        <HStack key={task.id} justifyContent="space-between">
+        <Box key={task.id} display="flex" alignItems="center" gap={1}>
           {task.isEditing ? (
-            <HStack w="100%">
-              <Input
+            <>
+              <TextField
+                fullWidth
                 value={editedTexts[task.id] || ''}
-                onChange={(e) =>
-                  setEditedTexts((prev) => ({ ...prev, [task.id]: e.target.value }))
-                }
+                onChange={(e) => setEditedTexts((prev) => ({ ...prev, [task.id]: e.target.value }))}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     editTask({ id: task.id, text: editedTexts[task.id] });
@@ -41,37 +39,39 @@ const TaskList = ({ filter, date }: Props) => {
                   }
                 }}
               />
-              <HStack spacing={2}>
-                <Button onClick={() => editTask({ id: task.id, text: editedTexts[task.id] })} size="sm">
-                  保存
-                </Button>
-                <Button onClick={() => cancelEdit(task.id)} size="sm" colorScheme="gray">
-                  キャンセル
-                </Button>
-              </HStack>
-            </HStack>
+              <Button
+                onClick={() => editTask({ id: task.id, text: editedTexts[task.id] })}
+                size="small"
+                variant="contained"
+              >
+                保存
+              </Button>
+              <IconButton onClick={() => cancelEdit(task.id)} size="small">
+                <CloseIcon />
+              </IconButton>
+            </>
           ) : (
-            <HStack w="100%" justifyContent="space-between">
-              <Checkbox isChecked={task.done} onChange={() => toggleTask(task.id)}>
-                {task.text}
-              </Checkbox>
-              <HStack>
-                <Button
-                  onClick={() => {
-                    startEdit(task.id);
-                    setEditedTexts((prev) => ({ ...prev, [task.id]: task.text }));
-                  }}
-                  size="sm"
-                >
-                  編集
-                </Button>
-                <CloseButton onClick={() => removeTask(task.id)} />
-              </HStack>
-            </HStack>
+            <>
+              <Checkbox checked={task.done} onChange={() => toggleTask(task.id)} size="small" />
+              <Typography sx={{ flexGrow: 1 }}>{task.text}</Typography>
+              <Button
+                onClick={() => {
+                  startEdit(task.id);
+                  setEditedTexts((prev) => ({ ...prev, [task.id]: task.text }));
+                }}
+                size="small"
+                variant="outlined"
+              >
+                編集
+              </Button>
+              <IconButton onClick={() => removeTask(task.id)} aria-label="delete" size="small">
+                <DeleteIcon />
+              </IconButton>
+            </>
           )}
-        </HStack>
+        </Box>
       ))}
-    </Stack>
+    </Box>
   );
-}
+};
 export default TaskList;
