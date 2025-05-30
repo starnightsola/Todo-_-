@@ -3,22 +3,18 @@ import { Box, Checkbox, TextField, Button, IconButton, Typography } from '@mui/m
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTodos } from '../hooks/useTodos';
+import type { TaskListProps } from '../types';
 
-export type Filter = 'all' | 'active' | 'completed';
-
-type Props = {
-  filter: Filter;
-  date: string;
-};
-
-const TaskList = ({ filter, date }: Props) => {
+const TaskList = ({ statusFilter, date }: TaskListProps) => {
   const { tasks, toggleTask, removeTask, editTask, startEdit, cancelEdit } = useTodos();
   const [editedTexts, setEditedTexts] = useState<Record<number, string>>({});
   // タスク編集時に「一時的に入力中のテキスト」を保持するためです。
 
   const filteredTasks = tasks
     .filter((task) => task.date === date)
-    .filter((task) => (filter === 'all' ? true : filter === 'active' ? !task.done : task.done));
+    .filter((task) =>
+      statusFilter === 'all' ? true : statusFilter === 'active' ? !task.done : task.done
+    );
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>

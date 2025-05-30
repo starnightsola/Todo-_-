@@ -5,15 +5,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TaskInput from './TaskInput';
 import TaskList from './TaskList';
 import { useTaskContext } from '../context/useTaskContext';
+import type { TaskCardProps } from '../types';
 
-type Filter = 'all' | 'active' | 'completed';
-type Props = {
-  date: string;
-  filter: Filter;
-  onRemoveCard: (date: string) => void;
-};
-
-const TaskCard = ({ date, filter, onRemoveCard }: Props) => {
+const TaskCard = ({ date, statusFilter, onRemoveCard }: TaskCardProps) => {
   // console.log(`${date} カードが再レンダリングされました！`);
   console.count(`TaskCard ${date}`);
   const { tasks, dispatch } = useTaskContext();
@@ -46,7 +40,7 @@ const TaskCard = ({ date, filter, onRemoveCard }: Props) => {
       />
 
       <CardContent sx={{ paddingTop: 0 }}>
-        <TaskList filter={filter} date={date} />
+        <TaskList statusFilter={statusFilter} date={date} />
         <TaskInput date={date} />
       </CardContent>
     </Card>
@@ -54,5 +48,5 @@ const TaskCard = ({ date, filter, onRemoveCard }: Props) => {
 };
 // ✅ メモ化することで、dateやonRemoveCardが変わらない限り、再レンダリングされない！
 export default React.memo(TaskCard, (prevProps, nextProps) => {
-  return prevProps.date === nextProps.date && prevProps.filter === nextProps.filter;
+  return prevProps.date === nextProps.date && prevProps.statusFilter === nextProps.statusFilter;
 });

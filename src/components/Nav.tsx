@@ -1,9 +1,16 @@
 import { Drawer, List, ListItem, ListItemButton, ListItemText, Toolbar, Box } from '@mui/material';
-import type { NavProps } from '../types';
+import type { NavProps, DateFilter } from '../types';
+import { dateFilterLabels } from '../types';
 
 const drawerWidth = 240;
+const dateFilters: DateFilter[] = ['all', 'today', 'week'];
 
-const Nav = ({ open, onClose }: NavProps) => {
+const Nav = ({ open, onClose, onFilterChange }: NavProps) => {
+  const handleClick = (filter: DateFilter) => {
+    onFilterChange(filter);
+    onClose(); // メニューを閉じる処理
+  };
+
   return (
     <Drawer
       variant="persistent"
@@ -23,10 +30,10 @@ const Nav = ({ open, onClose }: NavProps) => {
         <Toolbar />
         {/* メニューリスト */}
         <List>
-          {['今日', '一週間予定'].map((text) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton onClick={onClose}>
-                <ListItemText primary={text} />
+          {dateFilters.map((filter) => (
+            <ListItem key={filter} disablePadding>
+              <ListItemButton onClick={() => handleClick(filter)}>
+                <ListItemText primary={dateFilterLabels[filter]} />
               </ListItemButton>
             </ListItem>
           ))}

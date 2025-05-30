@@ -42,4 +42,27 @@ export type HeaderProps = {
 export type NavProps = {
   open: boolean;
   onClose: () => void;
+  onFilterChange: (filter: DateFilter) => void;
+};
+
+// 状態フィルター
+export type StatusFilter = 'all' | 'active' | 'completed';
+export type TaskListProps = {
+  date: string;
+  statusFilter: StatusFilter;
+};
+export type TaskCardProps = {
+  date: string;
+  statusFilter: StatusFilter;
+  onRemoveCard: (date: string) => void;
+};
+
+// 日付フィルター
+export type DateFilter = 'all' | 'today' | 'week';
+
+// 表示用ラベル
+export const dateFilterLabels: Record<DateFilter, string> = {
+  all: 'すべての予定',
+  today: '今日の予定',
+  week: '一週間の予定',
 };
