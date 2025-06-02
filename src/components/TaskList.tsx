@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTodos } from '../hooks/useTodos';
 import type { TaskListProps } from '../types';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const TaskList = ({ statusFilter, date }: TaskListProps) => {
   const { tasks, toggleTask, removeTask, editTask, startEdit, cancelEdit } = useTodos();
@@ -18,56 +19,68 @@ const TaskList = ({ statusFilter, date }: TaskListProps) => {
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      {filteredTasks.map((task) => (
-        <Box key={task.id} display="flex" alignItems="center" gap={1}>
-          {task.isEditing ? (
-            <>
-              <TextField
-                fullWidth
-                value={editedTexts[task.id] || ''}
-                onChange={(e) => setEditedTexts((prev) => ({ ...prev, [task.id]: e.target.value }))}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    editTask({ id: task.id, text: editedTexts[task.id] });
-                  }
-                  if (e.key === 'Escape') {
-                    cancelEdit(task.id);
-                  }
-                }}
-              />
-              <Button
-                onClick={() => editTask({ id: task.id, text: editedTexts[task.id] })}
-                size="small"
-                variant="contained"
-              >
-                保存
-              </Button>
-              <IconButton onClick={() => cancelEdit(task.id)} size="small">
-                <CloseIcon />
-              </IconButton>
-            </>
-          ) : (
-            <>
-              <Checkbox checked={task.done} onChange={() => toggleTask(task.id)} size="small" />
-              <Typography sx={{ flexGrow: 1 }}>{task.text}</Typography>
-              <Button
-                onClick={() => {
-                  startEdit(task.id);
-                  setEditedTexts((prev) => ({ ...prev, [task.id]: task.text }));
-                }}
-                size="small"
-                variant="contained"
-                color="primary"
-              >
-                編集
-              </Button>
-              <IconButton onClick={() => removeTask(task.id)} aria-label="delete" size="small">
-                <DeleteIcon />
-              </IconButton>
-            </>
-          )}
-        </Box>
-      ))}
+      <AnimatePresence>
+        {filteredTasks.map((task) => (
+          <motion.div
+            key={task.id}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Box display="flex" alignItems="center" gap={1}>
+              {task.isEditing ? (
+                <>
+                  <TextField
+                    fullWidth
+                    value={editedTexts[task.id] || ''}
+                    onChange={(e) =>
+                      setEditedTexts((prev) => ({ ...prev, [task.id]: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        editTask({ id: task.id, text: editedTexts[task.id] });
+                      }
+                      if (e.key === 'Escape') {
+                        cancelEdit(task.id);
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={() => editTask({ id: task.id, text: editedTexts[task.id] })}
+                    size="small"
+                    variant="contained"
+                  >
+                    保存
+                  </Button>
+                  <IconButton onClick={() => cancelEdit(task.id)} size="small">
+                    <CloseIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  <Checkbox checked={task.done} onChange={() => toggleTask(task.id)} size="small" />
+                  <Typography sx={{ flexGrow: 1 }}>{task.text}</Typography>
+                  <Button
+                    onClick={() => {
+                      startEdit(task.id);
+                      setEditedTexts((prev) => ({ ...prev, [task.id]: task.text }));
+                    }}
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                  >
+                    編集
+                  </Button>
+                  <IconButton onClick={() => removeTask(task.id)} aria-label="delete" size="small">
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              )}
+            </Box>
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </Box>
   );
 };
