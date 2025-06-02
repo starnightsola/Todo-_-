@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Checkbox, TextField, Button, IconButton, Typography } from '@mui/material';
+import { Box, Checkbox, TextField, Button, IconButton, Typography, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTodos } from '../hooks/useTodos';
@@ -65,9 +65,11 @@ const TaskList = ({ statusFilter, date }: TaskListProps) => {
                     >
                       保存
                     </Button>
-                    <IconButton onClick={() => cancelEdit(task.id)} size="small">
-                      <CloseIcon />
-                    </IconButton>
+                    <Tooltip title="キャンセル">
+                      <IconButton onClick={() => cancelEdit(task.id)} size="small">
+                        <CloseIcon />
+                      </IconButton>
+                    </Tooltip>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -104,6 +106,7 @@ const TaskList = ({ statusFilter, date }: TaskListProps) => {
                     >
                       編集
                     </Button>
+
                     <IconButton
                       onClick={() => removeTask(task.id)}
                       aria-label="delete"
