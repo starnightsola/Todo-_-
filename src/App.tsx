@@ -8,6 +8,7 @@ import Nav from './components/Nav';
 import { useCards } from './hooks/useCards';
 import { useFilter } from './hooks/useFilter';
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function App() {
   const { cards, newDate, setNewDate, addCard, handleRemoveCard } = useCards();
@@ -104,15 +105,25 @@ export default function App() {
                 mt: 4,
               }}
             >
-              {filteredCards.map((date) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
-                  <TaskCard
-                    date={date}
-                    statusFilter={statusFilter}
-                    onRemoveCard={handleRemoveCard}
-                  />
-                </Grid>
-              ))}
+              <AnimatePresence>
+                {filteredCards.map((date) => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
+                    <motion.div
+                      key={date}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <TaskCard
+                        date={date}
+                        statusFilter={statusFilter}
+                        onRemoveCard={handleRemoveCard}
+                      />
+                    </motion.div>
+                  </Grid>
+                ))}
+              </AnimatePresence>
             </Grid>
           </Box>
         </Box>
