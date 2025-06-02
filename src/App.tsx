@@ -7,6 +7,7 @@ import TaskCard from './components/TaskCard';
 import Nav from './components/Nav';
 import { useCards } from './hooks/useCards';
 import { useFilter } from './hooks/useFilter';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 
 export default function App() {
   const { cards, newDate, setNewDate, addCard, handleRemoveCard } = useCards();
@@ -19,88 +20,103 @@ export default function App() {
     closeDrawer,
     handleDateFilterChange,
     filteredCards,
+    mode,
+    toggleColorMode,
+    currentTheme,
   } = useFilter(cards);
 
   return (
-    <Stack spacing={4} padding={0}>
-      <>
-        {/* Header を上に配置（固定表示） */}
-        <Header onMenuClick={toggleDrawer} isDrawerOpen={drawerOpen} />
-
-        {/* Drawer + メイン表示を横並びに */}
-        <Box sx={{ display: 'flex' }}>
-          <Nav
-            open={drawerOpen}
-            onClose={closeDrawer}
-            onFilterChange={handleDateFilterChange} // ← Propsに追加する必要あり
+    <ThemeProvider theme={currentTheme}>
+      <CssBaseline />
+      <Stack spacing={4} padding={0}>
+        <>
+          {/* Header を上に配置（固定表示） */}
+          <Header
+            onMenuClick={toggleDrawer}
+            isDrawerOpen={drawerOpen}
+            mode={mode}
+            onToggleTheme={toggleColorMode}
           />
-        </Box>
-      </>
-      <Box component="main" sx={{ flexGrow: 1, pt: 4 }}>
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <TextField
-            type="date"
-            value={newDate}
-            onChange={(e) => setNewDate(e.target.value)}
-            sx={{ width: 200 }}
-          />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={addCard}
-            sx={{ bgcolor: 'secondary.main' }}
-          >
-            カード追加
-          </Button>
-        </Stack>
 
-        <Stack
-          sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            mt: 4,
-          }}
-        >
-          <Box sx={{ width: 200 }}>
-            <Select
-              fullWidth
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'completed')}
-            >
-              <MenuItem value="all">すべて</MenuItem>
-              <MenuItem value="active">未完了</MenuItem>
-              <MenuItem value="completed">完了済み</MenuItem>
-            </Select>
+          {/* Drawer + メイン表示を横並びに */}
+          <Box sx={{ display: 'flex' }}>
+            <Nav
+              open={drawerOpen}
+              onClose={closeDrawer}
+              onFilterChange={handleDateFilterChange} // ← Propsに追加する必要あり
+            />
           </Box>
-        </Stack>
-
-        <Box>
-          <Grid
-            container
+        </>
+        <Box component="main" sx={{ flexGrow: 1, pt: 4, minHeight: '100vh' }}>
+          <Stack
+            direction="row"
             spacing={2}
             sx={{
-              maxWidth: '1000px',
-              px: 2,
-              mx: 'auto',
-              mb: 4,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <TextField
+              type="date"
+              value={newDate}
+              onChange={(e) => setNewDate(e.target.value)}
+              sx={{ width: 200 }}
+            />
+            <Button
+              variant="contained"
+              color="success"
+              onClick={addCard}
+              sx={{ bgcolor: 'secondary.main' }}
+            >
+              カード追加
+            </Button>
+          </Stack>
+
+          <Stack
+            sx={{
+              justifyContent: 'center',
+              alignItems: 'center',
               mt: 4,
             }}
           >
-            {filteredCards.map((date) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
-                <TaskCard date={date} statusFilter={statusFilter} onRemoveCard={handleRemoveCard} />
-              </Grid>
-            ))}
-          </Grid>
+            <Box sx={{ width: 200 }}>
+              <Select
+                fullWidth
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'completed')}
+              >
+                <MenuItem value="all">すべて</MenuItem>
+                <MenuItem value="active">未完了</MenuItem>
+                <MenuItem value="completed">完了済み</MenuItem>
+              </Select>
+            </Box>
+          </Stack>
+
+          <Box>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                maxWidth: '1000px',
+                px: 2,
+                mx: 'auto',
+                mb: 4,
+                mt: 4,
+              }}
+            >
+              {filteredCards.map((date) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
+                  <TaskCard
+                    date={date}
+                    statusFilter={statusFilter}
+                    onRemoveCard={handleRemoveCard}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
         </Box>
-      </Box>
-    </Stack>
+      </Stack>
+    </ThemeProvider>
   );
 }

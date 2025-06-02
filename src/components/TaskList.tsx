@@ -56,7 +56,8 @@ const TaskList = ({ statusFilter, date }: TaskListProps) => {
                   setEditedTexts((prev) => ({ ...prev, [task.id]: task.text }));
                 }}
                 size="small"
-                variant="outlined"
+                variant="contained"
+                color="primary"
               >
                 編集
               </Button>

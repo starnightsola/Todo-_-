@@ -37,6 +37,8 @@ export type NewTaskInput = {
 export type HeaderProps = {
   onMenuClick: () => void;
   isDrawerOpen: boolean;
+  mode: 'light' | 'dark';
+  onToggleTheme: () => void;
 };
 
 export type NavProps = {
