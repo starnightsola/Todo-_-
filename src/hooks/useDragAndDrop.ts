@@ -1,6 +1,6 @@
 // タスクのドラッグ＆ドロップによる移動・並び替え + 日付またぎ用にDragOverlay対応
 import { useState } from 'react';
-import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { PointerSensor, useSensor, useSensors, TouchSensor } from '@dnd-kit/core';
 import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { Task } from '../types';
@@ -17,7 +17,15 @@ export const useDragAndDrop = (
   onReorder: (newTasks: Task[]) => void // 並び替え後に呼び出すコールバック
 ): UseDragAndDropReturn => {
   // 1. ユーザーの入力を検知するセンサーを設定
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200, // 長押し時間（ms）
+        tolerance: 5, // 指のブレ許容範囲（px）
+      },
+    })
+  );
 
   // 2. 現在ドラッグ中のタスク（DragOverlayの表示用）
   const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -52,6 +60,7 @@ export const useDragAndDrop = (
     const newTasks = arrayMove(tasks, oldIndex, newIndex);
     onReorder(newTasks);
   };
+
   // 5. 必要な値を返す（センサー、DragOverlay用のタスク、イベントハンドラ）
   return { sensors, activeTask, handleDragStart, handleDragEnd };
 };
