@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTaskContext } from './context/useTaskContext';
 
 export default function App() {
-  const { cards, newDate, setNewDate, addCard, handleRemoveCard } = useCards();
+  const { cards, newDate, setNewDate, addCard, handleRemoveCard, handleReorder } = useCards();
   const { tasks } = useTaskContext(); // ← 全体の tasks を取得
 
   const {
@@ -124,7 +124,8 @@ export default function App() {
                           date={date}
                           tasks={tasksForDate}
                           statusFilter={statusFilter}
-                          onRemoveCard={handleRemoveCard}
+                          onRemoveCard={() => handleRemoveCard(date)} // ← UIとデータ両方を削除するならここでまとめてOK
+                          onReorder={(newTasks) => handleReorder(date, newTasks)}
                         />
                       </motion.div>
                     </Grid>
