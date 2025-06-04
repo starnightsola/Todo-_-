@@ -17,7 +17,7 @@ const TaskCard = ({ date, statusFilter, tasks, onRemoveCard }: TaskCardProps) =>
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
     if (stored) {
-      dispatch({ type: 'load', payload: JSON.parse(stored) });
+      dispatch({ type: 'loadOne', payload: { date, tasks: JSON.parse(stored) } });
     }
   }, [storageKey, dispatch]);
 
@@ -27,7 +27,7 @@ const TaskCard = ({ date, statusFilter, tasks, onRemoveCard }: TaskCardProps) =>
     localStorage.setItem(storageKey, JSON.stringify(tasks));
   }, [tasks, storageKey]);
 
-  // ✅ タスク並び替え時のコールバックを定義
+  //  タスク並び替え時のコールバックを定義
   const onReorder = (newTasks: Task[]) => {
     dispatch({ type: 'replace', payload: { date, tasks: newTasks } });
   };

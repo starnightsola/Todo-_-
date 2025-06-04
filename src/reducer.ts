@@ -96,6 +96,14 @@ export const reducer = (state: TaskState, action: Action): TaskState => {
       };
     }
 
+    case 'loadOne': {
+      const { date, tasks } = action.payload;
+      return {
+        ...state,
+        [date]: tasks,
+      };
+    }
+
     default:
       return state;
   }

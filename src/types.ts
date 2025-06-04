@@ -43,7 +43,8 @@ export type Action =
   | { type: 'startEdit'; payload: number }
   | { type: 'cancelEdit'; payload: number }
   | { type: 'patch'; payload: TaskPatchInput }
-  | { type: 'replace'; payload: { date: string; tasks: Task[] } };
+  | { type: 'replace'; payload: { date: string; tasks: Task[] } }
+  | { type: 'loadOne'; payload: { date: string; tasks: Task[] } };
 // Header コンポーネント用の props 型
 export type HeaderProps = {
   onMenuClick: () => void;

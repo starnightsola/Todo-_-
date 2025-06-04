@@ -4,24 +4,21 @@ import { Box } from '@mui/material';
 import type { Task } from '../types';
 
 type Props = {
-  task: Task;
-  children: React.ReactNode;
+  task: Task; // 対象のタスクデータ（task.id を id として渡す）
+  children: (dragHandleProps: ReturnType<typeof useSortable>) => React.ReactNode;
 };
 
 const SortableTaskItem = ({ task, children }: Props) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: task.id.toString(),
-  });
+  const sortable = useSortable({ id: task.id.toString() });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    cursor: 'grab',
+    transform: CSS.Transform.toString(sortable.transform),
+    transition: sortable.transition,
   };
 
   return (
-    <Box ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
+    <Box ref={sortable.setNodeRef} style={style}>
+      {children(sortable)}
     </Box>
   );
 };

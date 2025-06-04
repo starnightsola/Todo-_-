@@ -100,7 +100,7 @@ export default function App() {
               container
               spacing={2}
               sx={{
-                maxWidth: '1000px',
+                maxWidth: '1200px',
                 px: 2,
                 mx: 'auto',
                 mb: 4,
