@@ -4,12 +4,11 @@ import { useReducer } from 'react';
 import type { ReactNode } from 'react';
 import { reducer } from '../reducer';
 import { TaskContext } from './TaskContext';
+import type { TaskState } from '../types';
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
-  const [tasks, dispatch] = useReducer(reducer, []);
-  return (
-    <TaskContext.Provider value={{ tasks, dispatch }}>
-      {children}
-    </TaskContext.Provider>
-  );
+  const initialState: TaskState = {};
+  const [tasks, dispatch] = useReducer(reducer, initialState);
+
+  return <TaskContext.Provider value={{ tasks, dispatch }}>{children}</TaskContext.Provider>;
 };

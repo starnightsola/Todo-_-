@@ -5,15 +5,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TaskInput from './TaskInput';
 import TaskList from './TaskList';
 import { useTaskContext } from '../context/useTaskContext';
-import type { TaskCardProps } from '../types';
+import type { Task, TaskCardProps } from '../types';
 
-const TaskCard = ({ date, statusFilter, onRemoveCard }: TaskCardProps) => {
-  // console.log(`${date} カードが再レンダリングされました！`);
-  console.count(`TaskCard ${date}`);
-  const { tasks, dispatch } = useTaskContext();
+const TaskCard = ({ date, statusFilter, tasks, onRemoveCard }: TaskCardProps) => {
+  const { dispatch } = useTaskContext(); // ✅ tasks は props 経由でもらう
 
   const storageKey = `tasks-${date}`;
 
+  // 読み込み（初回のみ）
+  // 初回レンダリング時、localStorage に保存されているその日付のタスクリストを読み込む
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
     if (stored) {
@@ -21,12 +21,17 @@ const TaskCard = ({ date, statusFilter, onRemoveCard }: TaskCardProps) => {
     }
   }, [storageKey, dispatch]);
 
+  // 保存（この日付の tasks が更新されるたび）
+  // tasks（全体の状態）が変化するたびに、この date に対応する部分だけ保存
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(tasks));
   }, [tasks, storageKey]);
-  // useEffect(() => {
-  //   console.log(`${date} useEffectでレンダリングされた`);
-  // }, [date]);
+
+  // ✅ タスク並び替え時のコールバックを定義
+  const onReorder = (newTasks: Task[]) => {
+    dispatch({ type: 'replace', payload: { date, tasks: newTasks } });
+  };
+
   return (
     <Card sx={{ width: '100%' }}>
       <CardHeader
@@ -40,13 +45,17 @@ const TaskCard = ({ date, statusFilter, onRemoveCard }: TaskCardProps) => {
       />
 
       <CardContent sx={{ paddingTop: 0 }}>
-        <TaskList statusFilter={statusFilter} date={date} />
+        <TaskList tasks={tasks} statusFilter={statusFilter} date={date} onReorder={onReorder} />
         <TaskInput date={date} />
       </CardContent>
     </Card>
   );
 };
-// ✅ メモ化することで、dateやonRemoveCardが変わらない限り、再レンダリングされない！
+// ✅ 再レンダリングを最小限に
 export default React.memo(TaskCard, (prevProps, nextProps) => {
-  return prevProps.date === nextProps.date && prevProps.statusFilter === nextProps.statusFilter;
+  return (
+    prevProps.date === nextProps.date &&
+    prevProps.statusFilter === nextProps.statusFilter &&
+    prevProps.tasks === nextProps.tasks
+  );
 });

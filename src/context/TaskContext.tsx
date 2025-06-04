@@ -3,14 +3,12 @@
 import { createContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import { reducer } from '../reducer';
-import type { Task, Action } from '../types';
-
-
+import type { TaskState, Action } from '../types';
 
 // このContextの中にはこういうデータが入るよ」という設計図（型）。
 interface TaskContextType {
-  tasks: Task[]; // タスクのリスト
-  dispatch: React.Dispatch<Action>;// タスクを追加・削除・切り替える命令を出す関数
+  tasks: TaskState; // タスクのリスト
+  dispatch: React.Dispatch<Action>; // タスクを追加・削除・切り替える命令を出す関数
 }
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -18,11 +16,8 @@ export const TaskContext = createContext<TaskContextType | undefined>(undefined)
 
 // ✅ TaskProvider を export する！
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
-  const [tasks, dispatch] = useReducer(reducer, []);
+  const initialState: TaskState = {}; // ✅ 空のオブジェクトで初期化
+  const [tasks, dispatch] = useReducer(reducer, initialState);
 
-  return (
-    <TaskContext.Provider value={{ tasks, dispatch }}>
-      {children}
-    </TaskContext.Provider>
-  );
+  return <TaskContext.Provider value={{ tasks, dispatch }}>{children}</TaskContext.Provider>;
 };

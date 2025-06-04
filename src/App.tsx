@@ -9,9 +9,11 @@ import { useCards } from './hooks/useCards';
 import { useFilter } from './hooks/useFilter';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTaskContext } from './context/useTaskContext';
 
 export default function App() {
   const { cards, newDate, setNewDate, addCard, handleRemoveCard } = useCards();
+  const { tasks } = useTaskContext(); // ← 全体の tasks を取得
 
   const {
     statusFilter,
@@ -106,23 +108,28 @@ export default function App() {
               }}
             >
               <AnimatePresence>
-                {filteredCards.map((date) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
-                    <motion.div
-                      key={date}
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <TaskCard
-                        date={date}
-                        statusFilter={statusFilter}
-                        onRemoveCard={handleRemoveCard}
-                      />
-                    </motion.div>
-                  </Grid>
-                ))}
+                {filteredCards.map((date) => {
+                  const tasksForDate = tasks[date] || []; // ← ✅ ここで date ごとのタスクリストを抽出
+                  return (
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
+                      <motion.div
+                        key={date}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <TaskCard
+                          key={date}
+                          date={date}
+                          tasks={tasksForDate}
+                          statusFilter={statusFilter}
+                          onRemoveCard={handleRemoveCard}
+                        />
+                      </motion.div>
+                    </Grid>
+                  );
+                })}
               </AnimatePresence>
             </Grid>
           </Box>
