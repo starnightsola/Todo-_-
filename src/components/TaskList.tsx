@@ -163,6 +163,7 @@ const TaskList = ({ tasks, statusFilter, onReorder }: TaskListProps) => {
                 bgcolor: 'background.paper',
                 borderRadius: 1,
                 boxShadow: 3,
+                pointerEvents: 'none',
               }}
             >
               <Typography>{activeTask.text}</Typography>
