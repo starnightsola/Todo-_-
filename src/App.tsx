@@ -198,7 +198,6 @@ export default function App() {
                 bgcolor: 'white',
                 borderRadius: 1,
                 boxShadow: 3,
-                pointerEvents: 'none',
               }}
             >
               <DragIndicatorIcon />
