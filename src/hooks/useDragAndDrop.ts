@@ -20,7 +20,7 @@ export const useDragAndDrop = (
 ): UseDragAndDropReturn => {
   // 1. ユーザーの入力を検知するセンサーを設定
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }), // PCなどのマウス操作
+    useSensor(PointerSensor), // PCなどのマウス操作
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 10 } })
   );
 
