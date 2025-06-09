@@ -21,7 +21,7 @@ export const useDragAndDrop = (
   // 1. ユーザーの入力を検知するセンサーを設定
   const sensors = useSensors(
     useSensor(PointerSensor), // PCなどのマウス操作
-    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } })
+    useSensor(TouchSensor)
   );
 
   // 2. 現在ドラッグ中のタスク（DragOverlayの表示用）

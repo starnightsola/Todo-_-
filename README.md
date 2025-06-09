@@ -1,54 +1,40 @@
-# React + TypeScript + Vite
+# React タスク管理アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+このアプリは、日付ごとにタスクを管理できる **ドラッグ＆ドロップ対応** のTodoアプリです。React、TypeScript、MUI、dnd-kit を活用して構築されています。
 
-Currently, two official plugins are available:
+## 主な機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📅 **日付ごとのタスクカード管理**  
+  カレンダーから日付を選び、タスクカード（列）を追加できます。
 
-## Expanding the ESLint configuration
+- ✅ **タスクの追加・削除・完了チェック**  
+  各カードごとにタスクを入力・チェック・削除できます。
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🖱️ **ドラッグ＆ドロップでのタスク並び替え／日付移動**  
+  dnd-kitを使って、タスクの順番変更・カード間移動が可能です。
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- 🔍 **タスクのフィルタリング（全て／未完了／完了済み）**  
+  ステータスに応じてカードごとに表示を切り替えられます。
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- 🌗 **ダークモード切り替え（MUI対応）**  
+  ヘッダー右上からライト／ダークテーマを切り替えられます。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- 📱 **レスポンシブ対応**  
+  モバイル端末でも快適に操作できるよう最適化済みです。
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 使用技術
+
+- React + TypeScript
+- MUI (Material UI)
+- dnd-kit（ドラッグ＆ドロップライブラリ）
+- Vite
+- Zustand（または Context + Reducer）で状態管理
+
+## セットアップ手順
+
+```bash
+git clone https://github.com/starnightsola/Todo-_-.git
+cd your-repo-name
+npm install
+npm run dev
 ```
