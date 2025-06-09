@@ -1,25 +1,35 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Box } from '@mui/material';
 import type { Task } from '../types';
 
 type Props = {
-  task: Task; // 対象のタスクデータ（task.id を id として渡す）
-  children: (dragHandleProps: ReturnType<typeof useSortable>) => React.ReactNode;
+  task: Task;
+  date: string;
+  children: (props: {
+    attributes: ReturnType<typeof useSortable>['attributes'];
+    listeners: ReturnType<typeof useSortable>['listeners'];
+  }) => React.ReactNode;
 };
 
 const SortableTaskItem = ({ task, children }: Props) => {
-  const sortable = useSortable({ id: task.id.toString() });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: task.id.toString(),
+    data: {
+      type: 'task',
+      date: task.date, // 👈 task.date でOK
+    },
+  });
 
   const style = {
-    transform: CSS.Transform.toString(sortable.transform),
-    transition: sortable.transition,
+    transform: CSS.Transform.toString(transform),
+    transition: transition,
+    opacity: isDragging ? 0.3 : 1, // ← ここで制御
   };
 
   return (
-    <Box ref={sortable.setNodeRef} style={style}>
-      {children(sortable)}
-    </Box>
+    <div ref={setNodeRef} style={style}>
+      {children({ attributes, listeners })}
+    </div>
   );
 };
 

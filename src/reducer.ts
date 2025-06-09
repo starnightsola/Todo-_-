@@ -36,13 +36,21 @@ export const reducer = (state: TaskState, action: Action): TaskState => {
       return newState;
     }
 
-    // 指定されたIDのタスクを削除する
-    case 'remove': {
-      const id = action.payload;
-      const newState: TaskState = {};
-      for (const date in state) {
-        newState[date] = state[date].filter((task) => task.id !== id);
-      }
+    // 指定されたタスクを削除する
+    case 'delete': {
+      const { date, id } = action.payload;
+      const newList = state[date]?.filter((task) => task.id !== id) || [];
+      return {
+        ...state,
+        [date]: newList,
+      };
+    }
+
+    // 指定されたカードを削除する
+    case 'deleteCard': {
+      const { date } = action.payload;
+      const newState = { ...state };
+      delete newState[date]; // 完全にそのカード（date）を削除
       return newState;
     }
 
@@ -101,6 +109,21 @@ export const reducer = (state: TaskState, action: Action): TaskState => {
       return {
         ...state,
         [date]: tasks,
+      };
+    }
+    case 'move': {
+      const { fromDate, toDate, task } = action.payload;
+      console.log(`🔀 move: from ${fromDate} to ${toDate}`, task);
+      const fromTasks = state[fromDate] || [];
+      const toTasks = state[toDate] || [];
+
+      // 💡 dateを新しいものに更新！
+      const movedTask = { ...task, date: toDate };
+
+      return {
+        ...state,
+        [fromDate]: fromTasks.filter((t) => t.id !== task.id),
+        [toDate]: [...toTasks, movedTask],
       };
     }
 

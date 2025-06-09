@@ -22,11 +22,17 @@ export const useTodos = () => {
   );
 
   // ✅ 削除
-  const removeTask = useCallback(
+  const deleteTask = useCallback(
     (id: number) => {
-      dispatch({ type: 'remove', payload: id });
+      for (const date in tasks) {
+        if (tasks[date].some((t) => t.id === id)) {
+          console.log('🗑️ タスク削除', { id, date, task: tasks[date].find((t) => t.id === id) });
+          dispatch({ type: 'delete', payload: { date, id } });
+          break;
+        }
+      }
     },
-    [dispatch]
+    [dispatch, tasks]
   );
 
   // ✅ 編集確定
@@ -65,7 +71,7 @@ export const useTodos = () => {
     tasks,
     addTask,
     toggleTask,
-    removeTask,
+    deleteTask,
     editTask,
     startEdit,
     cancelEdit,

@@ -4,11 +4,22 @@ import { useReducer } from 'react';
 import type { ReactNode } from 'react';
 import { reducer } from '../reducer';
 import { TaskContext } from './TaskContext';
-import type { TaskState } from '../types';
+import type { TaskState, Task } from '../types';
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const initialState: TaskState = {};
   const [tasks, dispatch] = useReducer(reducer, initialState);
+  // TaskContextType に合わせた関数を定義
+  const handleReorder = (date: string, newTasks: Task[]) => {
+    dispatch({ type: 'replace', payload: { date, tasks: newTasks } });
+  };
 
-  return <TaskContext.Provider value={{ tasks, dispatch }}>{children}</TaskContext.Provider>;
+  const moveTask = (fromDate: string, toDate: string, task: Task) => {
+    dispatch({ type: 'move', payload: { fromDate, toDate, task } });
+  };
+  return (
+    <TaskContext.Provider value={{ tasks, dispatch, handleReorder, moveTask }}>
+      {children}
+    </TaskContext.Provider>
+  );
 };

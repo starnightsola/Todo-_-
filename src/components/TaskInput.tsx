@@ -37,6 +37,7 @@ const TaskInput = ({ date, onAdd }: Props) => {
           placeholder="タスクを入力"
           size="small"
           inputProps={{ 'data-testid': 'task-input' }}
+          sx={{ flexGrow: 1 }}
         />
         <Button
           variant="contained"

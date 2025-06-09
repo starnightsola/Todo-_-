@@ -1,43 +1,38 @@
-import React from 'react';
 import { useEffect } from 'react';
 import { Card, CardHeader, CardContent, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TaskInput from './TaskInput';
 import TaskList from './TaskList';
-import { useTaskContext } from '../context/useTaskContext';
-import type { Task, TaskCardProps } from '../types';
+import type { TaskCardProps } from '../types';
+import { useDroppable } from '@dnd-kit/core';
+import { useCards } from '../hooks/useCards';
 
-const TaskCard = ({ date, statusFilter, tasks, onRemoveCard }: TaskCardProps) => {
-  const { dispatch } = useTaskContext(); // ✅ tasks は props 経由でもらう
-
+const TaskCard = ({ date, statusFilter, allTasks, onReorder, deleteCardByDate }: TaskCardProps) => {
+  const tasks = allTasks[date] || [];
   const storageKey = `tasks-${date}`;
 
-  // 読み込み（初回のみ）
-  // 初回レンダリング時、localStorage に保存されているその日付のタスクリストを読み込む
-  useEffect(() => {
-    const stored = localStorage.getItem(storageKey);
-    if (stored) {
-      dispatch({ type: 'loadOne', payload: { date, tasks: JSON.parse(stored) } });
-    }
-  }, [storageKey, dispatch]);
+  // ⬇︎ 追加（useCards から cards を取得）
+  const { cards } = useCards();
+
+  const { setNodeRef } = useDroppable({
+    id: `card-${date}`,
+    data: { date, type: 'card' },
+  });
 
   // 保存（この日付の tasks が更新されるたび）
-  // tasks（全体の状態）が変化するたびに、この date に対応する部分だけ保存
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(tasks));
-  }, [tasks, storageKey]);
-
-  //  タスク並び替え時のコールバックを定義
-  const onReorder = (newTasks: Task[]) => {
-    dispatch({ type: 'replace', payload: { date, tasks: newTasks } });
-  };
+    if (tasks.length > 0 && cards.includes(date)) {
+      localStorage.setItem(storageKey, JSON.stringify(tasks));
+      console.log(`💾 Saved tasks for ${date}:`, tasks);
+    }
+  }, [tasks, storageKey, cards, date]);
 
   return (
-    <Card sx={{ width: '100%' }}>
+    <Card sx={{ width: '100%' }} ref={setNodeRef}>
       <CardHeader
         title={<Typography variant="h6">{date}</Typography>}
         action={
-          <IconButton onClick={() => onRemoveCard(date)} aria-label="delete">
+          <IconButton onClick={() => deleteCardByDate(date)} aria-label="delete">
             <DeleteIcon />
           </IconButton>
         }
@@ -45,17 +40,18 @@ const TaskCard = ({ date, statusFilter, tasks, onRemoveCard }: TaskCardProps) =>
       />
 
       <CardContent sx={{ paddingTop: 0 }}>
-        <TaskList tasks={tasks} statusFilter={statusFilter} date={date} onReorder={onReorder} />
+        <TaskList
+          key={date}
+          date={date}
+          statusFilter={statusFilter}
+          tasks={tasks}
+          allTasks={allTasks}
+          onReorder={onReorder}
+        />
         <TaskInput date={date} />
       </CardContent>
     </Card>
   );
 };
-// ✅ 再レンダリングを最小限に
-export default React.memo(TaskCard, (prevProps, nextProps) => {
-  return (
-    prevProps.date === nextProps.date &&
-    prevProps.statusFilter === nextProps.statusFilter &&
-    prevProps.tasks === nextProps.tasks
-  );
-});
+
+export default TaskCard;

@@ -37,14 +37,16 @@ export type NewTaskInput = {
 export type Action =
   | { type: 'add'; payload: { text: string; date: string } }
   | { type: 'toggle'; payload: number }
-  | { type: 'remove'; payload: number }
+  | { type: 'delete'; payload: { date: string; id: number } }
+  | { type: 'deleteCard'; payload: { date: string } }
   | { type: 'load'; payload: TaskState }
   | { type: 'edit'; payload: { id: number; text: string } }
   | { type: 'startEdit'; payload: number }
   | { type: 'cancelEdit'; payload: number }
   | { type: 'patch'; payload: TaskPatchInput }
   | { type: 'replace'; payload: { date: string; tasks: Task[] } }
-  | { type: 'loadOne'; payload: { date: string; tasks: Task[] } };
+  | { type: 'loadOne'; payload: { date: string; tasks: Task[] } }
+  | { type: 'move'; payload: { fromDate: string; toDate: string; task: Task } };
 // Header コンポーネント用の props 型
 export type HeaderProps = {
   onMenuClick: () => void;
@@ -65,14 +67,16 @@ export type TaskListProps = {
   date: string;
   statusFilter: StatusFilter;
   tasks: Task[]; // ✅ 日付ごとに渡されたタスク一覧
+  allTasks: Record<string, Task[]>;
   onReorder: (newTasks: Task[]) => void;
 };
 export type TaskCardProps = {
   date: string;
+  tasks: Task[];
+  allTasks: Record<string, Task[]>;
   statusFilter: StatusFilter;
-  tasks: Task[]; // ✅ この日付のタスクだけを受け取る
-  onRemoveCard: (date: string) => void;
   onReorder: (newTasks: Task[]) => void;
+  deleteCardByDate: (date: string) => void;
 };
 
 // 日付フィルター
@@ -83,4 +87,10 @@ export const dateFilterLabels: Record<DateFilter, string> = {
   all: 'すべての予定',
   today: '今日の予定',
   week: '一週間の予定',
+};
+export type TaskContextType = {
+  tasks: TaskState;
+  dispatch: React.Dispatch<Action>;
+  handleReorder: (date: string, newTasks: Task[]) => void;
+  moveTask: (fromDate: string, toDate: string, task: Task) => void;
 };
